@@ -11,12 +11,16 @@ import flickrflipper.sonia.com.flickrflipper.model.FlickrMainResponse
 import flickrflipper.sonia.com.flickrflipper.model.FlickrPhoto
 import flickrflipper.sonia.com.flickrflipper.utils.Constants
 import flickrflipper.sonia.com.flickrflipper.utils.Constants.Companion.GRID_COLUMNS
+import flickrflipper.sonia.com.flickrflipper.utils.EqualSpacingItemDecoration
+import flickrflipper.sonia.com.flickrflipper.utils.EqualSpacingItemDecoration.Companion.GRID
 import flickrflipper.sonia.com.flickrflipper.utils.RestClient
 import flickrflipper.sonia.com.flickrflipper.utils.Utils
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
+import java.net.SocketTimeoutException
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,6 +46,8 @@ class MainActivity : AppCompatActivity() {
         flickrAdapter = FlickrAdapter(this, flickrPhotosList)
         gridlayoutManager = GridLayoutManager(this, GRID_COLUMNS)
         recyclerView.layoutManager = gridlayoutManager
+        recyclerView.addItemDecoration(EqualSpacingItemDecoration(10, GRID))
+        recyclerView.setHasFixedSize(true)
         recyclerView.adapter = flickrAdapter
     }
 
@@ -51,19 +57,31 @@ class MainActivity : AppCompatActivity() {
                 .enqueue(object : Callback<FlickrMainResponse> {
 
                     override fun onResponse(call: Call<FlickrMainResponse>?, response: Response<FlickrMainResponse>?) {
-                        if (progressDialog.isShowing) {
-                            progressDialog.dismiss()
-                        }
-                        Utils.logd(TAG, "onResponse " + response?.body()?.photos?.photo?.get(0)?.id)
+                        dismissProgressDialog()
+                        //Utils.logd(TAG, "onResponse " + response?.body()?.photos?.photo?.get(0)?.id)
+
+                        flickrPhotosList = response?.body()?.photos?.photo!!
+
+                        flickrAdapter.setFlickrPhotoList(flickrPhotosList)
+                        flickrAdapter.notifyDataSetChanged()
                     }
 
                     override fun onFailure(call: Call<FlickrMainResponse>?, t: Throwable?) {
-                        if (progressDialog.isShowing) {
-                            progressDialog.dismiss()
+                        dismissProgressDialog()
+                        when (t) {
+                            is SocketTimeoutException -> Utils.customToast(applicationContext, resources.getString(R.string.something_went_wrong))
+                            is IOException -> Utils.customToast(applicationContext, resources.getString(R.string.no_internet_connection))
+                            else -> Utils.customToast(applicationContext, resources.getString(R.string.something_went_wrong))
                         }
                         Utils.logd(TAG, "onFailure " + t?.localizedMessage)
                     }
 
                 })
+    }
+
+    private fun dismissProgressDialog() {
+        if (progressDialog.isShowing) {
+            progressDialog.dismiss()
+        }
     }
 }

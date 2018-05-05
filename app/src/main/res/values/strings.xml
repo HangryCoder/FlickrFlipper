@@ -4,4 +4,6 @@
     <string name="flickr_key">793144425dc51642e8fae8ce157f5284</string>
     <string name="flickr_secret">4ad69e6b636c3c4c</string>
     <string name="loading_message">Loading, Please Wait...</string>
+    <string name="something_went_wrong">Something went wrong..</string>
+    <string name="no_internet_connection">No Internet Connection</string>
 </resources>

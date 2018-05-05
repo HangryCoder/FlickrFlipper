@@ -25,10 +25,19 @@ class FlickrAdapter(private val context: Context, private var flickrPhotosList: 
     override fun onBindViewHolder(holder: FlickrHolder?, position: Int) {
         val flickrPhoto = flickrPhotosList[position]
 
-        Glide.with(context).load(R.mipmap.ic_launcher).into(holder?.itemView?.flickrPhoto!!)
+        //Need to create this url inorder to access the photos from the gallery
+        val photoUrl = "https://farm${flickrPhoto.farm}.staticflickr.com/" +
+                "${flickrPhoto.server}/${flickrPhoto.id}_${flickrPhoto.secret}.jpg"
+
+        Glide.with(context).load(photoUrl).into(holder?.itemView?.flickrPhoto!!)
     }
 
     override fun getItemCount() = flickrPhotosList.size
+
+    fun setFlickrPhotoList(flickrPhotosList: ArrayList<FlickrPhoto>) {
+        this.flickrPhotosList.clear()
+        this.flickrPhotosList = flickrPhotosList
+    }
 
     inner class FlickrHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
