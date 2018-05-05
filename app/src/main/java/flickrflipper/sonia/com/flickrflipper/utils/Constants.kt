@@ -19,5 +19,7 @@ class Constants {
 
         const val GRID_COLUMNS = 2
 
+        const val GRID_SPACING = 15
+
     }
 }

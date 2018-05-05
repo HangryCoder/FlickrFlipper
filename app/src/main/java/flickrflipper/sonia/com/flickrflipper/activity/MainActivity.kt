@@ -11,6 +11,7 @@ import flickrflipper.sonia.com.flickrflipper.model.FlickrMainResponse
 import flickrflipper.sonia.com.flickrflipper.model.FlickrPhoto
 import flickrflipper.sonia.com.flickrflipper.utils.Constants
 import flickrflipper.sonia.com.flickrflipper.utils.Constants.Companion.GRID_COLUMNS
+import flickrflipper.sonia.com.flickrflipper.utils.Constants.Companion.GRID_SPACING
 import flickrflipper.sonia.com.flickrflipper.utils.EqualSpacingItemDecoration
 import flickrflipper.sonia.com.flickrflipper.utils.EqualSpacingItemDecoration.Companion.GRID
 import flickrflipper.sonia.com.flickrflipper.utils.RestClient
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         flickrAdapter = FlickrAdapter(this, flickrPhotosList)
         gridlayoutManager = GridLayoutManager(this, GRID_COLUMNS)
         recyclerView.layoutManager = gridlayoutManager
-        recyclerView.addItemDecoration(EqualSpacingItemDecoration(10, GRID))
+        recyclerView.addItemDecoration(EqualSpacingItemDecoration(GRID_SPACING, GRID))
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = flickrAdapter
     }
@@ -58,8 +59,6 @@ class MainActivity : AppCompatActivity() {
 
                     override fun onResponse(call: Call<FlickrMainResponse>?, response: Response<FlickrMainResponse>?) {
                         dismissProgressDialog()
-                        //Utils.logd(TAG, "onResponse " + response?.body()?.photos?.photo?.get(0)?.id)
-
                         flickrPhotosList = response?.body()?.photos?.photo!!
 
                         flickrAdapter.setFlickrPhotoList(flickrPhotosList)
