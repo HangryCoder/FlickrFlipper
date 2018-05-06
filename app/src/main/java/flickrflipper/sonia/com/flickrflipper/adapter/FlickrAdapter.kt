@@ -9,6 +9,8 @@ import com.bumptech.glide.Glide
 import flickrflipper.sonia.com.flickrflipper.R
 import flickrflipper.sonia.com.flickrflipper.model.FlickrPhoto
 import kotlinx.android.synthetic.main.flickr_photo_item_layout.view.*
+import kotlinx.android.synthetic.main.flickr_photo_front_layout.view.*
+import kotlinx.android.synthetic.main.flickr_photo_back_layout.view.*
 
 /**
  * Created by soniawadji on 05/05/18.
@@ -29,7 +31,9 @@ class FlickrAdapter(private val context: Context, private var flickrPhotosList: 
         val photoUrl = "https://farm${flickrPhoto.farm}.staticflickr.com/" +
                 "${flickrPhoto.server}/${flickrPhoto.id}_${flickrPhoto.secret}.jpg"
 
-        Glide.with(context).load(photoUrl).into(holder?.itemView?.flickrPhoto!!)
+        Glide.with(context).load(photoUrl).into(holder?.itemView?.flicktPhotoFrontLayout?.flickrPhoto!!)
+
+        holder.itemView?.flickrPhotoTitleTV?.text = flickrPhoto.title
     }
 
     override fun getItemCount() = flickrPhotosList.size
@@ -39,5 +43,12 @@ class FlickrAdapter(private val context: Context, private var flickrPhotosList: 
         this.flickrPhotosList = flickrPhotosList
     }
 
-    inner class FlickrHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    inner class FlickrHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        init {
+            itemView.flickrMainLayout.setOnClickListener {
+                itemView.flickrMainLayout.flipTheView()
+            }
+        }
+    }
 }
